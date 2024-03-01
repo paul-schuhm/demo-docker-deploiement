@@ -8,6 +8,8 @@ services:
       - 5001:80
     depends_on:
       - db # condition: service_healthy
+    links:
+      - db:database
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: /run/secrets/db_name
