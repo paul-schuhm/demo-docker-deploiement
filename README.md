@@ -23,3 +23,8 @@ A la racine du projet :
 ~~~bash
 docker compose down
 ~~~
+
+
+## Notes
+
+> Be aware that the environment variables for MySQL are only used if no database exists when the container starts (no database in the volume). To change credentials, remove the volume and then restart.

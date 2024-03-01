@@ -1,40 +1,53 @@
 services:
-  server:
-    build:
-      context: .
-    ports:
-      - 5001:80
-    # depends_on:
-    #   db:
-    #     condition: service_healthy
-    secrets:
-      - db-password
-      - db-user
-    environment:
-      - DB_HOST=db
-      - DB_NAME=mydb
-  # db:
-  #   image: mariadb
-  #   restart: always
-  #   user: root
+
+  # Serveur PHP
+  # server:
+  #   build:
+  #     context: .
+  #   ports:
+  #     - 5001:80
+  #   # depends_on:
+  #   #   db:
+  #   #     condition: service_healthy
   #   secrets:
-  #     - db-password
-  #   volumes:
-  #     - db-data:/var/lib/mysql
-  #   environment:
-  #     - MARIADB_ROOT_PASSWORD_FILE=/run/secrets/db-password
-  #     - MARIADB_DATABASE=example
-  #   expose:
-  #     - 3306
-  #   healthcheck:
-  #     test:  ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect",  "--innodb_initialized"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+  #     - db_root_password
+  #     - db_user_password
+  #     - db_user
+  #   restart: unless-stopped
+
+  # Base de données SQL
+  db:
+    image: mysql:8.3.0
+    restart: unless-stopped
+    volumes:
+      - ./db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE: /run/secrets/db_name
+      MYSQL_USER: /run/secrets/db_user
+      MYSQL_PASSWORD: /run/secrets/db_user_password
+    secrets:
+      - db_root_password
+      - db_user_password
+      - db_user
+      - db_name
+    expose:
+      - "3306"
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   db-data:
+
 secrets:
-  db-password:
+  db_user_password:
     file: db/password
-  db-user:
+  db_user:
     file: db/user
+  db_root_password:
+    file: db/rootpassword
+  db_name:
+    file: db/dbname
