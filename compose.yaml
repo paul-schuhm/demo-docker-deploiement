@@ -1,1 +1,40 @@
 services:
+  server:
+    build:
+      context: .
+    ports:
+      - 5001:80
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    secrets:
+      - db-password
+      - db-user
+    environment:
+      - DB_HOST=db
+      - DB_NAME=mydb
+  # db:
+  #   image: mariadb
+  #   restart: always
+  #   user: root
+  #   secrets:
+  #     - db-password
+  #   volumes:
+  #     - db-data:/var/lib/mysql
+  #   environment:
+  #     - MARIADB_ROOT_PASSWORD_FILE=/run/secrets/db-password
+  #     - MARIADB_DATABASE=example
+  #   expose:
+  #     - 3306
+  #   healthcheck:
+  #     test:  ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect",  "--innodb_initialized"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+volumes:
+  db-data:
+secrets:
+  db-password:
+    file: db/password
+  db-user:
+    file: db/user
