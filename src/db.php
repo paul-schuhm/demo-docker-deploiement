@@ -44,6 +44,10 @@ function retrieveDbCredentials(): array
 function databaseConnexion(): PDO
 {
 
+    $dbCredentials = retrieveDbCredentials();
+    $dsn = mysqlDSN(MYSQL_HOST, $dbCredentials['db_name']);
+    $dsn = "mysql:host=db;dbname=" . file_get_contents("/run/secrets/db_name");
+
     try {
 
         $pdo = new PDO($dsn, $dbCredentials['db_user'], $dbCredentials['db_user_password']);
