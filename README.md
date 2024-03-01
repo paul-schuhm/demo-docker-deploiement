@@ -4,7 +4,7 @@ Sources d'un projet fictif web minimal à déployer en prod.
 
 ## Pré-requis
 
-- Installer le Docker Engine sur la machine hôte;
+- Installer [Docker (Docker Engine)](https://www.docker.com/get-started/) sur la machine hôte;
 
 ## Lancer le projet
 
