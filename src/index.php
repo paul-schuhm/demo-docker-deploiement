@@ -20,6 +20,8 @@ set_exception_handler(function (Exception $e) {
 
 //Connexion à la base de données
 $connexion = databaseConnexion();
+//Erreur: le script d'initialisation (creation de la base 'mydb') et la creation de l'user mysql 'myuser'
+//ne fonctionne pas à l'initialisation de la base. Donc la connexion échoue pour l'instant.
 var_dump($connexion);
 
 
