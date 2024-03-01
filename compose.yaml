@@ -1,21 +1,28 @@
 services:
 
   # Serveur PHP
-  # server:
-  #   build:
-  #     context: .
-  #   ports:
-  #     - 5001:80
-  #   # depends_on:
-  #   #   db:
-  #   #     condition: service_healthy
-  #   secrets:
-  #     - db_root_password
-  #     - db_user_password
-  #     - db_user
-  #   restart: unless-stopped
+  server:
+    build:
+      context: .
 
-  # Base de données SQL
+    ports:
+      - 5001:80
+    depends_on:
+      - db # condition: service_healthy
+    secrets:
+      - db_root_password
+      - db_user_password
+      - db_user
+    restart: unless-stopped
+    develop:
+      watch:
+        - path: ./src
+          action: sync
+          target: /var/www/html
+    # ports:
+    #   - "127.0.0.1:5001:80"
+
+    # Base de données SQL
   db:
     image: mysql:8.3.0
     restart: unless-stopped
@@ -31,16 +38,15 @@ services:
       - db_user_password
       - db_user
       - db_name
-    expose:
-      - "3306"
-    healthcheck:
-      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # healthcheck:
+    #   test: ["CMD-SHELL", "mysql -uroot -p $(cat /run/secrets/db_root_password)" ]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
 
 volumes:
   db-data:
+
 
 secrets:
   db_user_password:
